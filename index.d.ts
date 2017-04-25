@@ -1,8 +1,10 @@
 import { Stream } from 'xstream'
+import {Component} from "@cycle/isolate";
 
-/** A Cycle component: takes sources as input and returns sinks. */
-export declare type Component<Src, Sink> = (sources: Src) => Sink;
-
+//TODO
+export declare interface HasSubscribe<T> {
+  subscribe: any
+}
 export declare interface Collection {
 
   /** Creates a collection.
@@ -42,17 +44,30 @@ export declare interface Collection {
    * stream issued from {Collection} and returns a stream of
    * arrays containing the results.
    */
-  pluck<Sink, T>(items$: Stream<Array<Sink>>, f: (sink: Sink) => T): Stream<Array<T>>;
+  pluck<Sink, T>(
+    sourceCollection$: HasSubscribe<Array<Sink>>,
+    pluckSelector: (sink: Sink) => HasSubscribe<T>
+  ): Stream<Array<T>>;
 
 
   // The following are tentative and can likely be improved:
   /**
    * Convert a stream of items' sources snapshots into a stream of collections.
    */
-  gather<Src, Sink, Sub, T>(component: Component<Src, Sink>, sources: Src, sourceItems$: Stream<Sub>, idAttribute: string, transformKey: string): Stream<T>;
+  gather<Src, Sink, Sub, T>
+    (component: Component<Src, Sink>,
+     sources: Src,
+     sourceItems$: HasSubscribe<Sub>,
+     idAttribute: string,
+     transformKey: (string) => string
+    ): Stream<Collection>
 
 
-  merge<Src, Sink, TSub, T extends TSub, U>(sourceCollection$: Stream<T>, mergeSelector: (Sink) => U, internal?: boolean): Stream<Sink>;
+  merge<Sink, SinkMember, SinkMemberStream extends Stream<SinkMember> , T>(
+    sourceCollection$: HasSubscribe<T>,
+    mergeSelector: (Sink) => SinkMemberStream,
+    internal?: boolean
+  ): SinkMemberStream
 
 }
 

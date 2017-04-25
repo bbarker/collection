@@ -1,10 +1,12 @@
 {
   "name": "@bbarker/collection",
-  "version": "0.6.0-SNAPSHOT.1",
+  "version": "0.6.0-SNAPSHOT.8",
   "description": "Manage a collection of item in your dataflow component",
   "main": "lib/collection.js",
+  "types": "index.d.ts",
   "files": [
-    "lib/"
+    "lib/",
+    "index.d.ts"
   ],
   "scripts": {
     "start": "babel-node examples/todolist/server.js",
