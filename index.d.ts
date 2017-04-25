@@ -1,5 +1,4 @@
-import { Stream } from '../../xstream'
-// import { Stream } from '../../most'
+import { Stream } from 'xstream'
 
 /** A Cycle component: takes sources as input and returns sinks. */
 export declare type Component<Src, Sink> = (sources: Src) => Sink;
@@ -44,6 +43,17 @@ export declare interface Collection {
    * arrays containing the results.
    */
   pluck<Sink, T>(items$: Stream<Array<Sink>>, f: (sink: Sink) => T): Stream<Array<T>>;
+
+
+  // The following are tentative and can likely be improved:
+  /**
+   * Convert a stream of items' sources snapshots into a stream of collections.
+   */
+  gather<Src, Sink, Sub, T>(component: Component<Src, Sink>, sources: Src, sourceItems$: Stream<Sub>, idAttribute: string, transformKey: string): Stream<T>;
+
+
+  merge<Src, Sink, TSub, T extends TSub, U>(sourceCollection$: Stream<T>, mergeSelector: (Sink) => U, internal?: boolean): Stream<Sink>;
+
 }
 
 export declare const Collection: Collection;
